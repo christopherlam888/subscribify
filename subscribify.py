@@ -8,6 +8,8 @@ import multiprocessing
 import tqdm
 import webbrowser
 
+INSTANCE = 'y.com.sb'
+
 def parse_args():
     parser = argparse.ArgumentParser(description="Available Options")
     parser.add_argument('-n', '--number_videos', dest='number_videos')
@@ -16,7 +18,7 @@ def parse_args():
 
 def getVideos(channel, n):
     channel_videos = []
-    url_start = 'https://vid.puffyan.us/api/v1/channels/'
+    url_start = f'https://{INSTANCE}/api/v1/channels/'
     url_end = '?fields=author,authorId,latestVideos&pretty=1'
     response = requests.get(url = url_start+channel+url_end)
     data = response.json()
@@ -65,7 +67,7 @@ def main():
         print("{:<5} {:<120} {:<30}".format(i+1, video.title, video.author))
 
     # browsing
-    url_start = 'https://vid.puffyan.us/watch?v='
+    url_start = f'https://{INSTANCE}/watch?v='
     browsing = True
     while browsing:
         selection = input("Browsing...Enter an item number: ")
