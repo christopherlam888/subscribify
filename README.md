@@ -24,7 +24,7 @@ To specify a number of videos to get per channel like 5, use the following comma
 
 You can also use the following command to see the help message of the script:
 
-```python3 chrono_crawler.py -h```
+```python3 subscribify.py -h```
 
 ***
 
