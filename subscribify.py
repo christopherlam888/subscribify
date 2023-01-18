@@ -1,18 +1,27 @@
 from video import Video
+import istarmap
+
 import pyfiglet
+import argparse
 import requests
 import multiprocessing
 import tqdm
 import webbrowser
 
-def getVideos(channel):
+def parse_args():
+    parser = argparse.ArgumentParser(description="Available Options")
+    parser.add_argument('-n', '--number_videos', dest='number_videos')
+    args = vars(parser.parse_args())
+    return args
+
+def getVideos(channel, n):
     channel_videos = []
     url_start = 'https://vid.puffyan.us/api/v1/channels/'
     url_end = '?fields=author,authorId,latestVideos&pretty=1'
     response = requests.get(url = url_start+channel+url_end)
     data = response.json()
-    for video in data['latestVideos']:
-        channel_videos.append(Video(video['title'], data['author'], video['videoId']))
+    for video in data['latestVideos'][:n]:
+        channel_videos.append(Video(video['title'], data['author'], video['published'], video['videoId']))
     return channel_videos
 
 def main():
@@ -35,19 +44,25 @@ def main():
     # get videos from API
     print("Getting videos...")
     videos = []
-    with multiprocessing.Pool() as pool, tqdm.tqdm(total=len(channels)) as pbar:
-        for channel_videos in pool.imap_unordered(getVideos, channels):
+    args = parse_args()
+    if args['number_videos']:
+        n = abs(int(args['number_videos'].strip()))
+    else:
+        n = 1
+    with multiprocessing.Pool() as pool:
+        params = [(channel, n) for channel in channels]
+        for channel_videos in tqdm.tqdm(pool.istarmap(getVideos, params), total=len(channels)):
             videos.extend(channel_videos)
-            pbar.update()
     print("Videos retrieved.")
+
+    # sort videos by published
+    videos.sort(key=lambda video: video.published, reverse=True)
 
     # print videos
     print()
     print("{:<5} {:<120} {:<30}".format("#", "Title", "Author"))
-    i = 1
-    for video in videos:
-        print("{:<5} {:<120} {:<30}".format(i, video.title, video.author))
-        i+=1
+    for i, video in enumerate(videos):
+        print("{:<5} {:<120} {:<30}".format(i+1, video.title, video.author))
 
     # browsing
     url_start = 'https://vid.puffyan.us/watch?v='
