@@ -4,7 +4,7 @@ Check the latest videos of your favourite YouTube channels as if you were subscr
 
 ![image](https://user-images.githubusercontent.com/85356197/213220795-745c2404-79a3-4884-a495-2e3cc5fa7456.png)
 
-Get requests are to the Invidious REST API at instance [vid.puffyan.us](https://vid.puffyan.us/feed/popular).
+Get requests are to the Invidious REST API at the instance [y.com.sb](https://y.com.sb/feed/popular).
 
 Using argparse pyfiglet, requests, multiprocessing, tqdm, webbrowser.
 
