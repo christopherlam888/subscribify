@@ -1,6 +1,12 @@
+from dataclasses import dataclass
+
+
+@dataclass(eq=True)
 class Video:
-    def __init__(self, title, author, published, videoId):
-        self.title = title
-        self.author = author
-        self.published = published
-        self.videoId = videoId
+    title: str
+    author: str
+    published: str
+    videoId: str
+
+    def __lt__(self, other):
+        return self.published < other.published
